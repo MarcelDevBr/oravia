@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+export NODE_PATH='/home/marcel/Desenvolvimento/workspace/oravia/oravia-api/node-env/lib/node_modules'
+export NPM_CONFIG_PREFIX='/home/marcel/Desenvolvimento/workspace/oravia/oravia-api/node-env'
+export npm_config_prefix='/home/marcel/Desenvolvimento/workspace/oravia/oravia-api/node-env'
+exec './node-env/bin/node' "$@"

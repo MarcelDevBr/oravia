@@ -1,0 +1,235 @@
+📊 ORAVIA: A verdade matemática por trás de cada negócio
+
+Este documento consolida a estratégia, arquitetura, design de interface e engenharia de software do projeto Oravia. Um ecossistema de inteligência financeira escalável baseado na metodologia de Viabilidade Económica 4.0, desenhado para gerar renda passiva com zero intervenção manual.
+
+1. Visão Geral e Objetivo Insano
+
+Nome do Projeto: Oravia (Oracle + Viability)
+
+Meta de Receita: R$ 1.000.000,00 por dia.
+
+Conceito: Transformar planilhas estáticas em diagnósticos financeiros dinâmicos, partilháveis e auditados por IA.
+
+Pilar Estratégico: Escala massiva através de APIs B2D (Business to Developer) e geração de leads B2B (Bancos/Contabilidades), eliminando a necessidade de suporte humano.
+
+2. Design e Interface de Utilizador (UI/UX)
+
+Para garantir conversão máxima e respeitar a carga cognitiva (foco em TDAH/TEA), a interface deve ser o oposto de uma planilha de Excel: limpa, guiada e reativa.
+
+A. Identidade Visual
+
+Paleta de Cores: * Fundo: Slate 50 (Claro) ou Slate 900 (Dark Mode automático).
+
+Primária: Blue 600 (Transmite confiança bancária).
+
+Sucesso: Emerald 500 (Sinal verde para viabilidade).
+
+Alerta: Rose 500 (Sinal vermelho para risco).
+
+Tipografia: Inter ou Geist (Fontes sem serifa, alta legibilidade para números).
+
+B. O Funil de Entrada (The Stepper UI)
+
+O utilizador não vê uma grelha. Vê um ecrã por vez com foco total (Hyperfocus UI):
+
+Ecrã 1: O Sonho. "Qual é o nome do seu projeto e o setor?" (Cria ligação emocional).
+
+Ecrã 2: O Arranque. "Quanto precisa investir para abrir as portas?" (Inputs grandes, formato moeda automático).
+
+Ecrã 3: A Operação. "Qual a estimativa de vendas no primeiro ano e os custos fixos mensais?" (Uso de sliders para facilitar a entrada de dados).
+
+Ecrã 4: O Motor. "A calcular 5.000 cenários de risco..." (Ecrã de loading com skeleton loaders para gerar antecipação).
+
+C. Dashboard do Oráculo (A Entrega de Valor)
+
+Onde a conversão (venda do relatório/lead) acontece:
+
+Header: Status gigante (🟢 VIÁVEL / 🔴 ALTO RISCO).
+
+Cards Superiores: VPL (R$), TIR (%), Payback (Meses), Ponto de Equilíbrio (Unidades).
+
+Gráfico Principal (Waterfall): Mostra o capital a descer no investimento e a subir com o fluxo de caixa até cruzar a linha do zero (Payback).
+
+Painel da IA (Sidebar): O "Conselheiro Virtual" escreve 3 bullet points traduzindo os números para linguagem comum. Ex: "O seu aluguer representa 40% da receita. Isso sufoca o caixa no ano 1."
+
+O Paywall (Blur Effect): Os gráficos de Stress Test e Monte Carlo aparecem desfocados com um cadeado brilhante. Botão: "Desbloquear Relatório Profissional Completo (R$ 49)".
+
+3. Arquitetura Técnica (Scale to Zero)
+
+Camada
+
+Tecnologia
+
+Função
+
+Link
+
+Frontend
+
+Next.js
+
+Interface, SSR e Dashboard dinâmico.
+
+Docs
+
+Styling/UI
+
+Tailwind + shadcn/ui
+
+Componentes acessíveis e rápidos.
+
+Docs
+
+Backend API
+
+FastAPI
+
+Motor de cálculo financeiro assíncrono.
+
+Docs
+
+Package Mgr
+
+uv
+
+Gestão de ambiente ultra-rápida.
+
+Repo
+
+Cálculos
+
+numpy-financial
+
+Precisão bancária (NPV/IRR).
+
+Docs
+
+Banco/Auth
+
+Supabase
+
+PostgreSQL, Autenticação e RLS.
+
+Docs
+
+Infra
+
+Vercel
+
+Serverless edge functions.
+
+Site
+
+4. Engenharia de Dados (Esquema Supabase)
+
+A modelagem de dados no PostgreSQL deve ser enxuta usando JSONB para permitir flexibilidade sem migrações constantes.
+
+Tabela: projects
+
+id (uuid, PK)
+
+user_id (uuid, FK, nullable para anónimos)
+
+is_paid (boolean, default: false)
+
+expires_at (timestamp, null se pago)
+
+inputs (jsonb) -> Guarda receitas, custos, investimento
+
+results (jsonb) -> Guarda VPL, TIR, Payback (Cache)
+
+created_at (timestamp)
+
+5. Mapeamento da API (FastAPI Routes)
+
+POST /api/v1/simulate
+
+In: JSON com premissas financeiras.
+
+Out: JSON com indicadores (VPL, TIR) e ID temporal.
+
+POST /api/v1/projects/{id}/unlock
+
+Geração do link de pagamento Stripe/Asaas.
+
+POST /api/v1/webhooks/payments
+
+Recebe confirmação do gateway e atualiza is_paid = true.
+
+GET /api/v1/projects/{id}/report
+
+Rota protegida (verifica se está pago) que devolve a Análise de IA e os dados para os gráficos premium.
+
+6. Inteligência Artificial (A Lógica do Prompt)
+
+O diferencial do Oravia é traduzir matemática financeira em conselhos acionáveis usando o Groq (Llama 3).
+
+System Prompt Base:
+
+Você é o 'Oráculo', um Diretor Financeiro (CFO) sênior implacável, mas didático.
+O usuário vai enviar um JSON com o VPL, TIR e Payback de um projeto.
+Sua missão:
+1. Dar um veredicto claro de 1 frase (Viável, Arriscado ou Inviável).
+2. Apontar o maior risco oculto nos números.
+3. Dar 1 sugestão drástica para melhorar o fluxo de caixa.
+Responda em tom direto e profissional. Nunca explique o que é VPL, apenas use a métrica.
+
+
+7. Estratégia de Monetização (Funil B2C, B2B e B2D)
+
+Plano Gratuito: Simulação básica. Expira em 48h (Gatilho de urgência).
+
+Relatório Pro (B2C): R$ 49,00. Desbloqueia PDF auditado, gráficos avançados (Análise de Sensibilidade) e link vitalício.
+
+Assinatura B2B: R$ 299,00/mês para White Label (Consultores usam a ferramenta com a logo deles para impressionar clientes).
+
+O Motor de 1 Milhão (Lead Gen): Projetos com alto VPL geram um botão "Financie este projeto". Você recebe 1% a 2% de comissão dos bancos parceiros sobre o crédito aprovado.
+
+8. Validação Matemática (Test-Driven Development)
+
+Garantia de que o Python bate exatamente com a planilha LUZ.vc 4.0.
+
+# test_engine.py (Executar com: uv run pytest)
+import numpy_financial as npf
+
+def test_vpl_e_tir_precisao_luzvc():
+    investimento = -100000
+    fluxos = [30000, 40000, 50000, 60000]
+    tma = 0.12 # Taxa de 12%
+    
+    caixa = [investimento] + fluxos
+    vpl = npf.npv(tma, caixa)
+    tir = npf.irr(caixa)
+    
+    # Assertivas de segurança bancária
+    assert round(vpl, 2) == 30972.18
+    assert round(tir, 4) == 0.2489 # 24.89%
+
+
+9. Workflow com UV (Desenvolvimento Local em Arch Linux)
+
+Inicialização: uv init --app oravia-api
+
+Dependências: uv add fastapi uvicorn numpy-financial pandas supabase pydantic
+
+Vantagem TDAH: O uv resolve dependências em milissegundos, mantendo o estado de flow contínuo sem distrações de terminais lentos.
+
+10. Roadmap de Sprints (Plano de Ação Diário)
+
+Sprint 1 (O Motor): Setup do FastAPI, funções matemáticas usando numpy-financial e testes unitários passando a 100%.
+
+Sprint 2 (A Base): Criação do projeto no Supabase, definição do esquema JSONB e rotas de CRUD.
+
+Sprint 3 (A Casca): Setup do Next.js + shadcn/ui. Criação do "Stepper" e gráficos com Recharts.
+
+Sprint 4 (A Mágica): Integração com Groq API para gerar as respostas da IA.
+
+Sprint 5 (O Dinheiro): Webhooks do Stripe/Asaas, geração do PDF e bloqueio de paywall.
+
+11. Links Úteis e Documentações
+
+FastAPI | Next.js | Supabase
+
+uv Package Manager | numpy-financial
+
+"Oravia: A verdade matemática por trás do seu próximo negócio."
