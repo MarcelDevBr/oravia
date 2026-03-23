@@ -1,8 +1,17 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from app.schemas import FinancialInputs, FinancialResults, MultiScenarioInputs, SimulationFullOutput, MonteCarloResults
 from app.engine import run_simulation, run_monte_carlo
 
 app = FastAPI(title="Oravia API", version="1.0.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def read_root():
