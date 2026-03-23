@@ -14,7 +14,8 @@ import {
   Sparkles,
   LogOut,
   Play,
-  BookOpen
+  BookOpen,
+  TrendingUp
 } from "lucide-react";
 
 import ProOverview from "./pro/ProOverview";
@@ -23,25 +24,37 @@ import ProOPEX from "./pro/ProOPEX";
 import ProCAPEX from "./pro/ProCAPEX";
 import ProReports from "./pro/ProReports";
 import EVEKnowledge from "./pro/EVEKnowledge";
-import { getHistory, SimulationHistoryItem } from "@/lib/history";
+import ProComparison from "./pro/ProComparison";
+import { getHistory, SimulationHistoryItem, deleteSimulation } from "@/lib/history";
 
 interface DashboardProps {
   results: any;
   inputs: any;
   onReset: () => void;
+  onSelectProject?: (project: SimulationHistoryItem) => void;
 }
 
-type Tab = "overview" | "sales" | "opex" | "capex" | "reports" | "history" | "eve";
+type Tab = "overview" | "sales" | "opex" | "capex" | "reports" | "history" | "eve" | "comparison";
 
-export default function Dashboard({ results, inputs, onReset }: DashboardProps) {
+export default function Dashboard({ results, inputs, onReset, onSelectProject }: DashboardProps) {
   const t = useTranslations('Dashboard');
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [history, setHistory] = useState<SimulationHistoryItem[]>([]);
   const [showInfo, setShowInfo] = useState(false);
   
-  useEffect(() => {
+  const refreshHistory = () => {
     setHistory(getHistory());
+  };
+
+  useEffect(() => {
+    refreshHistory();
   }, []);
+
+  const handleDelete = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    deleteSimulation(id);
+    refreshHistory();
+  };
 
   const menuItems = [
     { id: "overview", label: t('menu_dashboard'), icon: <LayoutGrid size={20} /> },
@@ -49,6 +62,7 @@ export default function Dashboard({ results, inputs, onReset }: DashboardProps) 
     { id: "opex", label: t('menu_opex'), icon: <Receipt size={20} /> },
     { id: "capex", label: t('menu_capex'), icon: <Calculator size={20} /> },
     { id: "reports", label: t('menu_reports'), icon: <FileBarChart size={20} /> },
+    { id: "comparison", label: "Comparativo", icon: <TrendingUp size={20} /> },
     { id: "eve", label: "Conceitos EVE", icon: <BookOpen size={20} /> },
     { id: "history", label: t('menu_history'), icon: <History size={20} /> },
   ];
@@ -79,6 +93,30 @@ export default function Dashboard({ results, inputs, onReset }: DashboardProps) 
               </button>
            ))}
         </nav>
+
+        <div className="mt-8 px-2">
+           <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4 px-4">Meus Projetos</p>
+           <div className="space-y-1 max-h-[30vh] overflow-y-auto custom-scrollbar">
+              {history.map((project) => (
+                 <div 
+                    key={project.id}
+                    onClick={() => onSelectProject?.(project)}
+                    className={`group flex items-center justify-between px-4 py-3 rounded-xl cursor-pointer transition-all ${inputs.project_name === project.project_name ? 'bg-blue-600/10 text-blue-400' : 'text-slate-400 hover:bg-white/5'}`}
+                 >
+                    <div className="flex items-center gap-3 overflow-hidden">
+                       <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${inputs.project_name === project.project_name ? 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]' : 'bg-slate-700'}`} />
+                       <span className="text-xs font-bold truncate">{project.project_name}</span>
+                    </div>
+                    <button 
+                       onClick={(e) => handleDelete(e, project.id)}
+                       className="opacity-0 group-hover:opacity-100 p-1 hover:text-rose-500 transition-all"
+                    >
+                       <LogOut size={12} className="rotate-180" />
+                    </button>
+                 </div>
+              ))}
+           </div>
+        </div>
 
         <div className="pt-6 border-t border-white/5 space-y-2 mt-auto">
            <div 
@@ -138,7 +176,8 @@ export default function Dashboard({ results, inputs, onReset }: DashboardProps) 
                   {activeTab === "sales" && <ProSales showInfo={showInfo} />}
                   {activeTab === "opex" && <ProOPEX showInfo={showInfo} />}
                   {activeTab === "capex" && <ProCAPEX showInfo={showInfo} />}
-                  {activeTab === "reports" && <ProReports showInfo={showInfo} />}
+                  {activeTab === "reports" && <ProReports results={results} inputs={inputs} showInfo={showInfo} />}
+                  {activeTab === "comparison" && <ProComparison history={history} />}
                   {activeTab === "eve" && <EVEKnowledge />}
                   {activeTab === "history" && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

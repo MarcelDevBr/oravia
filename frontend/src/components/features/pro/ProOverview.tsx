@@ -1,9 +1,20 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { 
+  BarChart, Bar, 
+  XAxis, YAxis, 
+  CartesianGrid, Tooltip, 
+  ResponsiveContainer, Cell,
+  LineChart, Line,
+  PieChart, Pie
+} from "recharts";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { TrendingUp, TrendingDown, Clock, Target, CheckCircle2, Crown, Sparkles } from "lucide-react";
+import { 
+  TrendingUp, TrendingDown, Clock, Target, 
+  CheckCircle2, Crown, Sparkles, PieChart as PieIcon,
+  ArrowUpRight, ArrowDownRight, Activity
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 
@@ -25,11 +36,27 @@ export default function ProOverview({ results, inputs, showInfo }: ProOverviewPr
     caixa: s - inputs.monthly_costs[i]
   }));
 
+  // Calculate accumulated cash flow
+  let acc = -inputs.initial_investment;
+  const accumulatedData = inputs.monthly_sales.map((s: number, i: number) => {
+    acc += (s - inputs.monthly_costs[i]);
+    return {
+      month: `M${i + 1}`,
+      accumulated: acc,
+      threshold: 0
+    };
+  });
+
   const scenarioData = results.scenarios ? [
-    { name: t('pessimistic'), vpl: results.scenarios.pessimistic.vpl },
-    { name: t('realistic'), vpl: results.scenarios.realistic.vpl },
-    { name: t('optimistic'), vpl: results.scenarios.optimistic.vpl },
+    { name: t('pessimistic'), vpl: results.scenarios.pessimistic.vpl, fill: '#f43f5e' },
+    { name: t('realistic'), vpl: results.scenarios.realistic.vpl, fill: '#3b82f6' },
+    { name: t('optimistic'), vpl: results.scenarios.optimistic.vpl, fill: '#10b981' },
   ] : [];
+
+  const pieData = [
+    { name: 'Investimento', value: inputs.initial_investment, fill: '#3b82f6' },
+    { name: 'Custos Operacionais', value: inputs.monthly_costs.reduce((a: any, b: any) => a + b, 0), fill: '#f43f5e' },
+  ];
 
   const successProb = monteCarlo ? (monteCarlo.probability_of_success * 100).toFixed(0) : "82";
 
@@ -84,7 +111,7 @@ export default function ProOverview({ results, inputs, showInfo }: ProOverviewPr
         />
         <KPI 
           title={t('kpi_payback')} 
-          value={`${realistic.payback_months}`} suffix=" meses" 
+          value={`${realistic.payback_months || 0}`} suffix=" meses" 
           icon={<Clock className="text-orange-500" />} 
           info={showInfo ? t('info_payback') : undefined}
         />
@@ -98,12 +125,18 @@ export default function ProOverview({ results, inputs, showInfo }: ProOverviewPr
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
         <Card className="xl:col-span-2 border-none shadow-2xl bg-white/70 backdrop-blur-xl rounded-[2rem] p-4 md:p-8">
-          <Tabs defaultValue="cashflow" className="w-full">
+          <Tabs defaultValue="cashflow" className="w-full text-zinc-950">
             <div className="flex justify-between items-center mb-6">
-              <CardTitle className="text-xl font-black text-slate-800 tracking-tight">{t('visual_analysis')}</CardTitle>
+              <div className="flex items-center gap-3">
+                 <div className="bg-blue-600/10 p-2 rounded-xl text-blue-600">
+                    <Activity size={18} />
+                 </div>
+                 <CardTitle className="text-xl font-black text-slate-800 tracking-tight">{t('visual_analysis') || "Análise Visual"}</CardTitle>
+              </div>
               <TabsList className="bg-slate-100/50 rounded-xl p-1">
-                <TabsTrigger value="cashflow" className="rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest">{t('cash_flow')}</TabsTrigger>
-                <TabsTrigger value="scenarios" className="rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest">{t('scenarios')}</TabsTrigger>
+                <TabsTrigger value="cashflow" className="rounded-lg px-4 py-2 text-xs font-bold uppercase tracking-widest">{t('cash_flow')}</TabsTrigger>
+                <TabsTrigger value="accumulated" className="rounded-lg px-4 py-2 text-xs font-bold uppercase tracking-widest">Acumulado</TabsTrigger>
+                <TabsTrigger value="scenarios" className="rounded-lg px-4 py-2 text-xs font-bold uppercase tracking-widest">{t('scenarios')}</TabsTrigger>
               </TabsList>
             </div>
             
@@ -117,9 +150,24 @@ export default function ProOverview({ results, inputs, showInfo }: ProOverviewPr
                      cursor={{ fill: '#f1f5f9' }}
                      contentStyle={{ borderRadius: '24px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', padding: '20px' }}
                   />
-                  <Bar dataKey="vendas" fill="#3b82f6" radius={[6, 6, 0, 0]} barSize={24} />
-                  <Bar dataKey="caixa" fill="#10b981" radius={[6, 6, 0, 0]} barSize={24} />
+                  <Bar dataKey="vendas" name="Receita" fill="#3b82f6" radius={[6, 6, 0, 0]} barSize={24} />
+                  <Bar dataKey="caixa" name="Resultado" fill="#10b981" radius={[6, 6, 0, 0]} barSize={24} />
                 </BarChart>
+              </ResponsiveContainer>
+            </TabsContent>
+
+            <TabsContent value="accumulated" className="h-[400px] mt-0">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={accumulatedData} margin={{ top: 0, right: 20, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                  <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 900, fill: '#94a3b8' }} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 900, fill: '#94a3b8' }} />
+                  <Tooltip 
+                     contentStyle={{ borderRadius: '24px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', padding: '20px' }}
+                  />
+                  <Line type="monotone" dataKey="accumulated" name="Acumulado" stroke="#3b82f6" strokeWidth={4} dot={{ r: 6, fill: "#3b82f6" }} />
+                  <Line type="monotone" dataKey="threshold" name="Break-even" stroke="#94a3b8" strokeDasharray="5 5" dot={false} />
+                </LineChart>
               </ResponsiveContainer>
             </TabsContent>
 
@@ -135,7 +183,7 @@ export default function ProOverview({ results, inputs, showInfo }: ProOverviewPr
                   />
                   <Bar dataKey="vpl" radius={[6, 6, 0, 0]} barSize={60}>
                     {scenarioData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.vpl > 0 ? '#3b82f6' : '#f43f5e'} />
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -163,10 +211,10 @@ export default function ProOverview({ results, inputs, showInfo }: ProOverviewPr
                  </div>
                  <div className="w-full bg-white/10 h-3 rounded-full overflow-hidden">
                     <motion.div 
-                      initial={{ width: 0 }}
-                      animate={{ width: `${successProb}%` }}
-                      transition={{ duration: 1.5, ease: "easeOut" }}
-                      className={`${parseInt(successProb) > 50 ? 'bg-blue-500' : 'bg-rose-500'} h-full shadow-[0_0_20px_rgba(59,130,246,0.6)]`}
+                       initial={{ width: 0 }}
+                       animate={{ width: `${successProb}%` }}
+                       transition={{ duration: 1.5, ease: "easeOut" }}
+                       className={`${parseInt(successProb) > 50 ? 'bg-blue-500' : 'bg-rose-500'} h-full shadow-[0_0_20px_rgba(59,130,246,0.6)]`}
                     />
                  </div>
               </div>
