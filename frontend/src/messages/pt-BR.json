@@ -29,6 +29,15 @@
     "verdict_title": "Veredicto do Oráculo",
     "unlock_cta": "Desbloquear Relatório Pro (R$ 59)",
     "success_prob": "Probabilidade de Sucesso",
-    "new_sim": "Nova Simulação"
+    "new_sim": "Nova Simulação",
+    "visual_analysis": "Análise Visual",
+    "cash_flow": "Fluxo de Caixa",
+    "scenarios": "Cenários",
+    "pessimistic": "Pessimista",
+    "realistic": "Realista",
+    "optimistic": "Otimista",
+    "simulation_disclaimer": "* Baseado em 1.000 iterações de Monte Carlo com ±20% de volatilidade.",
+    "history": "Histórico",
+    "no_history": "Nenhuma simulação anterior."
   }
 }

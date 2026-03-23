@@ -10,7 +10,8 @@ import { Slider } from "@/components/ui/slider";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import Dashboard from "./Dashboard";
-import { runSimulation } from "@/lib/api";
+import { runMultiScenario } from "@/lib/api";
+import { saveSimulation } from "@/lib/history";
 
 interface FinancialInputs {
   project_name: string;
@@ -40,10 +41,43 @@ export default function Stepper() {
   const prevStep = () => setStep(step - 1);
 
   const handleSimulate = async () => {
+    if (!inputs.project_name || !inputs.sector) {
+      alert("Por favor, preencha o nome e setor do projeto.");
+      setStep(1);
+      return;
+    }
+
     setLoading(true);
     try {
-      const data = await runSimulation(inputs);
+      // Generate scenarios automatically
+      const realisticSales = inputs.monthly_sales;
+      const realisticCosts = inputs.monthly_costs;
+
+      const multiInputs = {
+        initial_investment: inputs.initial_investment,
+        tma: inputs.tma,
+        scenarios: {
+          realistic: {
+            monthly_sales: realisticSales,
+            monthly_costs: realisticCosts
+          },
+          optimistic: {
+            monthly_sales: realisticSales.map(s => s * 1.2),
+            monthly_costs: realisticCosts.map(c => c * 0.9)
+          },
+          pessimistic: {
+            monthly_sales: realisticSales.map(s => s * 0.8),
+            monthly_costs: realisticCosts.map(c => c * 1.1)
+          }
+        }
+      };
+
+      const data = await runMultiScenario(multiInputs);
       setResults(data);
+      
+      // Save to history
+      saveSimulation(inputs.project_name, inputs, data);
+      
       setStep(5);
     } catch (error) {
       console.error("Simulation failed:", error);
@@ -142,7 +176,7 @@ export default function Stepper() {
                     max={1000000} 
                     step={5000} 
                     value={[inputs.initial_investment]}
-                    onValueChange={(val) => setInputs({...inputs, initial_investment: val[0] as any})}
+                    onValueChange={(val: any) => setInputs({...inputs, initial_investment: Array.isArray(val) ? val[0] : val})}
                     className="py-4"
                   />
                 </div>

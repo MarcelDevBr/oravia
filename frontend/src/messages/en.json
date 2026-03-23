@@ -29,6 +29,15 @@
     "verdict_title": "Oracle Verdict",
     "unlock_cta": "Unlock Pro Report ($ 59)",
     "success_prob": "Success Probability",
-    "new_sim": "New Simulation"
+    "new_sim": "New Simulation",
+    "visual_analysis": "Visual Analysis",
+    "cash_flow": "Cash Flow",
+    "scenarios": "Scenarios",
+    "pessimistic": "Pessimistic",
+    "realistic": "Realistic",
+    "optimistic": "Optimistic",
+    "simulation_disclaimer": "* Based on 1,000 Monte Carlo iterations with ±20% volatility.",
+    "history": "History",
+    "no_history": "No previous simulations found."
   }
 }

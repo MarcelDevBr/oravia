@@ -1,4 +1,4 @@
-import Stepper from "@/components/Stepper";
+import Stepper from "@/components/features/Stepper";
 
 export default function Home() {
   return (
