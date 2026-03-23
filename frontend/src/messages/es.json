@@ -17,7 +17,12 @@
     "next": "Siguiente",
     "back": "Volver",
     "simulate": "Consultar Oráculo",
-    "simulating": "Consultando..."
+    "simulating": "Consultando...",
+    "project_name_label": "Nombre del Proyecto",
+    "sector_label": "Sector / Industria",
+    "investment_label": "Inversión Inicial",
+    "revenue_label": "Promedio de Ingresos Mensuales",
+    "costs_label": "Costos Operativos Mensuales"
   },
   "Dashboard": {
     "viable": "PROYECTO VIABLE",
@@ -38,6 +43,12 @@
     "optimistic": "Optimista",
     "simulation_disclaimer": "* Basado en 1.000 iteraciones de Monte Carlo con ±20% de volatilidad.",
     "history": "Historial",
-    "no_history": "No se encontraron simulaciones previas."
+    "no_history": "No se encontraron simulaciones previas.",
+    "menu_dashboard": "Panel General",
+    "menu_sales": "Proyección de Ventas",
+    "menu_opex": "Costos Operativos",
+    "menu_capex": "Inversiones (CAPEX)",
+    "menu_reports": "Informes Finales",
+    "menu_history": "Historial"
   }
 }

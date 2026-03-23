@@ -54,6 +54,8 @@ export default function Stepper() {
       const realisticCosts = inputs.monthly_costs;
 
       const multiInputs = {
+        project_name: inputs.project_name,
+        sector: inputs.sector,
         initial_investment: inputs.initial_investment,
         tma: inputs.tma,
         scenarios: {
@@ -135,7 +137,7 @@ export default function Stepper() {
               </CardHeader>
               <CardContent className="px-0 space-y-8">
                 <div className="space-y-3">
-                  <Label htmlFor="name" className="text-xs font-bold uppercase tracking-widest text-slate-400">Project Name</Label>
+                  <Label htmlFor="name" className="text-xs font-bold uppercase tracking-widest text-slate-400">{t('project_name_label')}</Label>
                   <Input 
                     id="name" 
                     className="h-14 text-lg border-slate-200 focus:ring-blue-500 focus:border-blue-500 rounded-2xl bg-white/50"
@@ -145,7 +147,7 @@ export default function Stepper() {
                   />
                 </div>
                 <div className="space-y-3">
-                  <Label htmlFor="sector" className="text-xs font-bold uppercase tracking-widest text-slate-400">Sector / Industry</Label>
+                  <Label htmlFor="sector" className="text-xs font-bold uppercase tracking-widest text-slate-400">{t('sector_label')}</Label>
                   <Input 
                     id="sector" 
                     className="h-14 text-lg border-slate-200 focus:ring-blue-500 focus:border-blue-500 rounded-2xl bg-white/50"
@@ -168,7 +170,7 @@ export default function Stepper() {
               <CardContent className="px-0 space-y-10">
                 <div className="space-y-6">
                   <div className="flex justify-between items-end">
-                    <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Initial Investment</Label>
+                    <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">{t('investment_label')}</Label>
                     <span className="font-black text-blue-600 text-4xl tracking-tighter">R$ {(inputs.initial_investment as any).toLocaleString()}</span>
                   </div>
                   <Slider 
@@ -196,14 +198,14 @@ export default function Stepper() {
               </CardHeader>
               <CardContent className="px-0 space-y-8">
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Monthly Revenue Average</Label>
+                  <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">{t('revenue_label')}</Label>
                   <Input type="number" className="h-14 text-lg border-slate-200 rounded-2xl bg-white/50" value={inputs.monthly_sales[0] as number} onChange={(e) => {
                      const val = parseFloat(e.target.value);
                      setInputs({...inputs, monthly_sales: [val, val*1.1, val*1.2, val*1.3]})
                   }} />
                 </div>
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Monthly Operational Costs</Label>
+                  <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">{t('costs_label')}</Label>
                   <Input type="number" className="h-14 text-lg border-slate-200 rounded-2xl bg-white/50" value={(inputs.monthly_costs as any)[0]} onChange={(e) => {
                      const val = parseFloat(e.target.value);
                      setInputs({...inputs, monthly_costs: [val, val, val, val]})

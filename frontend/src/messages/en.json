@@ -17,7 +17,12 @@
     "next": "Next",
     "back": "Back",
     "simulate": "Consult Oracle",
-    "simulating": "Consulting..."
+    "simulating": "Consulting...",
+    "project_name_label": "Project Name",
+    "sector_label": "Sector / Industry",
+    "investment_label": "Initial Investment",
+    "revenue_label": "Monthly Revenue Average",
+    "costs_label": "Monthly Operational Costs"
   },
   "Dashboard": {
     "viable": "VIABLE PROJECT",
@@ -38,6 +43,12 @@
     "optimistic": "Optimistic",
     "simulation_disclaimer": "* Based on 1,000 Monte Carlo iterations with ±20% volatility.",
     "history": "History",
-    "no_history": "No previous simulations found."
+    "no_history": "No previous simulations found.",
+    "menu_dashboard": "Main Dashboard",
+    "menu_sales": "Sales Projection",
+    "menu_opex": "Operational Costs",
+    "menu_capex": "Investments (CAPEX)",
+    "menu_reports": "Final Reports",
+    "menu_history": "History"
   }
 }
