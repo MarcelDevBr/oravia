@@ -11,7 +11,7 @@ interface OpexRow {
   values: number[];
 }
 
-export default function ProOPEX() {
+export default function ProOPEX({ showInfo }: { showInfo?: boolean }) {
   const t = useTranslations('Dashboard');
   const [rows, setRows] = useState<OpexRow[]>([
     { id: 1, category: "Mão de Obra", item: "Salários + Encargos", type: "Fixa", values: Array(12).fill(15000) },

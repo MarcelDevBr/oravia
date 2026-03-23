@@ -13,7 +13,8 @@ import {
   ChevronRight,
   Sparkles,
   LogOut,
-  Play
+  Play,
+  BookOpen
 } from "lucide-react";
 
 import ProOverview from "./pro/ProOverview";
@@ -21,6 +22,7 @@ import ProSales from "./pro/ProSales";
 import ProOPEX from "./pro/ProOPEX";
 import ProCAPEX from "./pro/ProCAPEX";
 import ProReports from "./pro/ProReports";
+import EVEKnowledge from "./pro/EVEKnowledge";
 import { getHistory, SimulationHistoryItem } from "@/lib/history";
 
 interface DashboardProps {
@@ -29,12 +31,13 @@ interface DashboardProps {
   onReset: () => void;
 }
 
-type Tab = "overview" | "sales" | "opex" | "capex" | "reports" | "history";
+type Tab = "overview" | "sales" | "opex" | "capex" | "reports" | "history" | "eve";
 
 export default function Dashboard({ results, inputs, onReset }: DashboardProps) {
   const t = useTranslations('Dashboard');
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [history, setHistory] = useState<SimulationHistoryItem[]>([]);
+  const [showInfo, setShowInfo] = useState(false);
   
   useEffect(() => {
     setHistory(getHistory());
@@ -46,6 +49,7 @@ export default function Dashboard({ results, inputs, onReset }: DashboardProps) 
     { id: "opex", label: t('menu_opex'), icon: <Receipt size={20} /> },
     { id: "capex", label: t('menu_capex'), icon: <Calculator size={20} /> },
     { id: "reports", label: t('menu_reports'), icon: <FileBarChart size={20} /> },
+    { id: "eve", label: "Conceitos EVE", icon: <BookOpen size={20} /> },
     { id: "history", label: t('menu_history'), icon: <History size={20} /> },
   ];
 
@@ -76,7 +80,21 @@ export default function Dashboard({ results, inputs, onReset }: DashboardProps) 
            ))}
         </nav>
 
-        <div className="pt-6 border-t border-white/5 mt-auto">
+        <div className="pt-6 border-t border-white/5 space-y-2 mt-auto">
+           <div 
+              onClick={() => setShowInfo(!showInfo)}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl cursor-pointer transition-all border ${showInfo ? 'bg-blue-600/10 border-blue-600/30 text-blue-400' : 'text-slate-500 border-transparent hover:bg-white/5'}`}
+           >
+              <Sparkles size={18} className={showInfo ? 'animate-pulse' : ''} />
+              <div className="flex flex-col">
+                 <span className="text-xs font-bold leading-none">{t('mod_edu')}</span>
+                 <span className="text-[10px] opacity-50 font-medium">Auto-ajuda</span>
+              </div>
+              <div className={`ml-auto w-8 h-4 rounded-full relative transition-colors ${showInfo ? 'bg-blue-600' : 'bg-slate-700'}`}>
+                 <div className={`absolute top-1 w-2 h-2 bg-white rounded-full transition-all ${showInfo ? 'left-5' : 'left-1'}`} />
+              </div>
+           </div>
+           
            <button 
               onClick={onReset}
               className="w-full flex items-center gap-3 px-4 py-4 rounded-2xl text-rose-400 font-bold hover:bg-rose-500/10 transition-colors"
@@ -116,11 +134,12 @@ export default function Dashboard({ results, inputs, onReset }: DashboardProps) 
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}
                >
-                  {activeTab === "overview" && <ProOverview results={results} inputs={inputs} />}
-                  {activeTab === "sales" && <ProSales />}
-                  {activeTab === "opex" && <ProOPEX />}
-                  {activeTab === "capex" && <ProCAPEX />}
-                  {activeTab === "reports" && <ProReports />}
+                  {activeTab === "overview" && <ProOverview results={results} inputs={inputs} showInfo={showInfo} />}
+                  {activeTab === "sales" && <ProSales showInfo={showInfo} />}
+                  {activeTab === "opex" && <ProOPEX showInfo={showInfo} />}
+                  {activeTab === "capex" && <ProCAPEX showInfo={showInfo} />}
+                  {activeTab === "reports" && <ProReports showInfo={showInfo} />}
+                  {activeTab === "eve" && <EVEKnowledge />}
                   {activeTab === "history" && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                        {history.map(item => (

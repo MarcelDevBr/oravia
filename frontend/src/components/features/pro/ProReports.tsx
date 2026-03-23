@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-export default function ProReports() {
+export default function ProReports({ showInfo }: { showInfo?: boolean }) {
   const t = useTranslations('Dashboard');
   const months = ["mai-25", "jun-25", "jul-25", "ago-25", "set-25", "out-25", "nov-25", "dez-25", "jan-26", "fev-26", "mar-26", "abr-26"];
 

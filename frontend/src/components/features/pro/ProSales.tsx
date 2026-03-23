@@ -12,7 +12,7 @@ interface SalesRow {
   quantities: number[];
 }
 
-export default function ProSales() {
+export default function ProSales({ showInfo }: { showInfo?: boolean }) {
   const t = useTranslations('Dashboard');
   const [rows, setRows] = useState<SalesRow[]>([
     { id: 1, segment: "Segmento 1", product: "Produto 1", price: 3500, quantities: Array(12).fill(1) },

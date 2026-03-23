@@ -12,7 +12,7 @@ interface CapexRow {
   residual_value: number;
 }
 
-export default function ProCAPEX() {
+export default function ProCAPEX({ showInfo }: { showInfo?: boolean }) {
   const t = useTranslations('Dashboard');
   const [rows, setRows] = useState<CapexRow[]>([
     { id: 1, item: "Computadores e Laptops", type: "Equipamentos", value: 25000, useful_life: 36, residual_value: 0 },

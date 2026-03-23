@@ -1,6 +1,6 @@
 {
   "HomePage": {
-    "subtitle": "Viabilidade Econômica 4.0",
+    "subtitle": "Viabilidade Econômica",
     "title": "A verdade matemática por trás do seu negócio.",
     "description": "Transformamos planilhas estáticas em diagnósticos financeiros inteligentes. O Oráculo analisa o seu projeto em segundos.",
     "cta": "Acessar Oráculo"
@@ -49,6 +49,32 @@
     "menu_opex": "Custos Operacionais",
     "menu_capex": "Investimentos (CAPEX)",
     "menu_reports": "Relatórios Finais",
-    "menu_history": "Histórico"
+    "menu_history": "Histórico",
+    "mod_edu": "Modo Educativo",
+    "mod_edu_desc": "Explicações sobre processos e indicadores financeiros.",
+    "eve_title": "Estudo de Viabilidade Econômica (EVE)",
+    "eve_subtitle": "Análise profunda para determinar se um projeto tem potencial lucrativo.",
+    "eve_definition": "O EVE responde se a ideia vale a pena o dinheiro investido, indo além da viabilidade técnica.",
+    "pillar_costs_title": "1. Custos e Investimentos",
+    "pillar_costs_desc": "Lista de recursos necessários para operar.",
+    "pillar_revenue_title": "2. Projeção de Receitas",
+    "pillar_revenue_desc": "Estimativa realista de entrada de caixa.",
+    "pillar_indicators_title": "3. Indicadores de Desempenho",
+    "pillar_indicators_desc": "Matemática financeira para o veredito final.",
+    "info_vpl": "VPL: Traz fluxos futuros para o valor de hoje. Se positivo, gera valor.",
+    "info_tir": "TIR: Rentabilidade do projeto. Deve ser maior que o custo de oportunidade.",
+    "info_payback": "Payback: Tempo necessário para recuperar o investimento inicial.",
+    "info_breakeven": "Break-even: Ponto onde as receitas igualam os custos.",
+    "why_eve_1": "Redução de Riscos: Identifica falhas antecipadamente.",
+    "why_eve_2": "Atração de Investidores: Gera confiança para sócios e bancos.",
+    "why_eve_3": "Planejamento Estratégico: Define metas reais de vendas.",
+    "tab_economic": "Econômica",
+    "tab_financial": "Financeira",
+    "tab_technical": "Técnica",
+    "tab_commercial": "Comercial",
+    "ques_economic": "Gera lucro e retorno?",
+    "ques_financial": "Teremos caixa no dia a dia?",
+    "ques_technical": "Temos a tecnologia necessária?",
+    "ques_commercial": "Existe demanda pelo preço definido?"
   }
 }

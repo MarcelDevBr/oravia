@@ -3,16 +3,17 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { TrendingUp, TrendingDown, Clock, Target, CheckCircle2, Crown } from "lucide-react";
+import { TrendingUp, TrendingDown, Clock, Target, CheckCircle2, Crown, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 
 interface ProOverviewProps {
   results: any;
   inputs: any;
+  showInfo?: boolean;
 }
 
-export default function ProOverview({ results, inputs }: ProOverviewProps) {
+export default function ProOverview({ results, inputs, showInfo }: ProOverviewProps) {
   const t = useTranslations('Dashboard');
   const realistic = results.scenarios?.realistic || results;
   const monteCarlo = results.monte_carlo;
@@ -34,11 +35,65 @@ export default function ProOverview({ results, inputs }: ProOverviewProps) {
 
   return (
     <div className="space-y-8 pb-10">
+      {showInfo && (
+        <motion.div 
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          className="bg-blue-600 rounded-[2rem] p-8 text-white relative overflow-hidden shadow-2xl shadow-blue-600/20"
+        >
+           <div className="absolute top-0 right-0 p-4 opacity-10">
+              <Sparkles size={120} />
+           </div>
+           <div className="relative z-10 max-w-3xl">
+              <h3 className="text-2xl font-black tracking-tight mb-4 flex items-center gap-2">
+                 <Sparkles size={24} /> {t('eve_title')}
+              </h3>
+              <p className="text-blue-100 font-medium leading-relaxed mb-6">
+                 {t('eve_definition')}
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                 <div className="p-4 bg-white/10 rounded-2xl border border-white/10">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-blue-300 mb-1">{t('pillar_costs_title')}</p>
+                    <p className="text-xs font-medium text-blue-50">{t('pillar_costs_desc')}</p>
+                 </div>
+                 <div className="p-4 bg-white/10 rounded-2xl border border-white/10">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-blue-300 mb-1">{t('pillar_revenue_title')}</p>
+                    <p className="text-xs font-medium text-blue-50">{t('pillar_revenue_desc')}</p>
+                 </div>
+                 <div className="p-4 bg-white/10 rounded-2xl border border-white/10">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-blue-300 mb-1">{t('pillar_indicators_title')}</p>
+                    <p className="text-xs font-medium text-blue-50">{t('pillar_indicators_desc')}</p>
+                 </div>
+              </div>
+           </div>
+        </motion.div>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <KPI title={t('kpi_vpl')} value={`R$ ${realistic.vpl.toLocaleString()}`} icon={<TrendingUp className="text-blue-500" />} />
-        <KPI title={t('kpi_tir')} value={`${(realistic.tir * 100).toFixed(2)}%`} icon={<Target className="text-emerald-500" />} />
-        <KPI title={t('kpi_payback')} value={`${realistic.payback_months}`} suffix=" meses" icon={<Clock className="text-orange-500" />} />
-        <KPI title={t('kpi_breakeven')} value={`R$ ${inputs.monthly_costs[0].toLocaleString()}`} icon={<TrendingDown className="text-rose-500" />} />
+        <KPI 
+          title={t('kpi_vpl')} 
+          value={`R$ ${realistic.vpl.toLocaleString()}`} 
+          icon={<TrendingUp className="text-blue-500" />} 
+          info={showInfo ? t('info_vpl') : undefined}
+        />
+        <KPI 
+          title={t('kpi_tir')} 
+          value={`${(realistic.tir * 100).toFixed(2)}%`} 
+          icon={<Target className="text-emerald-500" />} 
+          info={showInfo ? t('info_tir') : undefined}
+        />
+        <KPI 
+          title={t('kpi_payback')} 
+          value={`${realistic.payback_months}`} suffix=" meses" 
+          icon={<Clock className="text-orange-500" />} 
+          info={showInfo ? t('info_payback') : undefined}
+        />
+        <KPI 
+          title={t('kpi_breakeven')} 
+          value={`R$ ${inputs.monthly_costs[0].toLocaleString()}`} 
+          icon={<TrendingDown className="text-rose-500" />} 
+          info={showInfo ? t('info_breakeven') : undefined}
+        />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
@@ -122,17 +177,26 @@ export default function ProOverview({ results, inputs }: ProOverviewProps) {
   );
 }
 
-function KPI({ title, value, suffix = "", icon }: { title: string, value: string, suffix?: string, icon: React.ReactNode }) {
+function KPI({ title, value, suffix = "", icon, info }: { title: string, value: string, suffix?: string, icon: React.ReactNode, info?: string }) {
   return (
-    <Card className="border-none shadow-xl bg-white/70 backdrop-blur-xl rounded-[1.5rem] p-6 ring-1 ring-white/50">
+    <Card className="border-none shadow-xl bg-white/70 backdrop-blur-xl rounded-[1.5rem] p-6 ring-1 ring-white/50 relative overflow-hidden group">
       <CardContent className="p-0 flex items-center justify-between">
-        <div>
+        <div className="relative z-10">
            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{title}</p>
            <p className="text-3xl font-black text-slate-900 mt-1 tracking-tighter">
              {value}<span className="text-base text-slate-400">{suffix}</span>
            </p>
+           {info && (
+             <motion.p 
+               initial={{ opacity: 0, y: 5 }}
+               animate={{ opacity: 1, y: 0 }}
+               className="text-[9px] font-bold text-blue-600 mt-2 leading-tight"
+             >
+               {info}
+             </motion.p>
+           )}
         </div>
-        <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center">
+        <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center shrink-0">
            {icon}
         </div>
       </CardContent>
