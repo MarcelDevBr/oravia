@@ -1,0 +1,17 @@
+[project]
+name = "oravia-workspace"
+version = "0.1.0"
+description = "Oravia Project Workspace"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "oravia-api",
+    "uvicorn>=0.42.0",
+    "pytest>=9.0.2",
+]
+
+[tool.uv.workspace]
+members = ["oravia-api"]
+
+[tool.uv.sources]
+oravia-api = { workspace = true }
