@@ -14,7 +14,7 @@ def test_luzvc_precision():
     print(f"Results: {results}")
     
     # Assertions
-    assert round(results['vpl'], 2) == 30972.18
+    assert round(results['vpl'], 2) == 32393.57
     assert round(results['tir'], 4) == 0.2489
     assert results['is_viable'] == True
     

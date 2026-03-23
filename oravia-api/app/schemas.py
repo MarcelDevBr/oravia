@@ -26,12 +26,16 @@ class MonteCarloResults(BaseModel):
     worst_case_vpl: float
     best_case_vpl: float
 
+class ScenarioInput(BaseModel):
+    monthly_sales: List[float]
+    monthly_costs: List[float]
+
 class MultiScenarioInputs(BaseModel):
     project_name: str
     sector: str
     initial_investment: float
     tma: float
-    scenarios: Dict[str, FinancialInputs]  # e.g., {"realistic": ..., "optimistic": ...}
+    scenarios: Dict[str, ScenarioInput]  # e.g., {"realistic": ..., "optimistic": ...}
 
 class SimulationFullOutput(BaseModel):
     scenarios: Dict[str, FinancialResults]
