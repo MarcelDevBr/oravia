@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Printer, Download, FileText, TrendingUp, TrendingDown, Activity } from "lucide-react";
 
 import { exportToPDF } from "@/lib/pdfExport";
+import { exportToExcel } from "@/lib/excelExport";
+import { Crown } from "lucide-react";
 
 interface ProReportsProps {
   results: any;
@@ -30,6 +32,10 @@ export default function ProReports({ results, inputs, showInfo, isPro, onUpgrade
     await exportToPDF('report-container', `Relatorio_Oravia_${inputs.project_name}`);
   };
 
+  const handleExportExcel = () => {
+    exportToExcel({ inputs, results }, `Oravia_Export_${inputs.project_name}`);
+  };
+
   return (
     <div className="space-y-8 print:p-0" id="report-container">
       <div className="flex justify-between items-center print:hidden">
@@ -42,18 +48,11 @@ export default function ProReports({ results, inputs, showInfo, isPro, onUpgrade
             <Printer size={16} className="group-hover:scale-110 transition-transform" /> Exportar PDF Pro
           </Button>
           <Button 
-            onClick={!isPro ? onUpgrade : undefined}
+            onClick={!isPro ? onUpgrade : handleExportExcel}
             className={`rounded-2xl font-black text-[10px] uppercase tracking-widest gap-2 h-12 px-6 transition-all group relative overflow-hidden ${!isPro ? 'bg-slate-100 text-slate-400 border border-slate-200' : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xl shadow-emerald-600/20'}`}
           >
-            <Download size={16} /> 
-            <span>Exportar Excel</span>
-            {!isPro && (
-              <div className="absolute inset-0 bg-slate-900/5 backdrop-blur-[1px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <span className="bg-slate-900 text-white text-[8px] px-2 py-1 rounded-full flex items-center gap-1 leading-none">
-                   🔒 RECURSO PREMIUM
-                </span>
-              </div>
-            )}
+            {isPro ? <Download size={16} /> : <Crown size={16} className="text-amber-500" />}
+            <span>{isPro ? "Exportar Excel" : "Excel (Pro)"}</span>
           </Button>
         </div>
       </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
   BarChart, Bar, 
@@ -13,8 +14,11 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { 
   TrendingUp, TrendingDown, Clock, Target, 
   CheckCircle2, Crown, Sparkles, PieChart as PieIcon,
-  ArrowUpRight, ArrowDownRight, Activity
+  ArrowUpRight, ArrowDownRight, Activity,
+  Sliders,
+  AlertCircle
 } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 
@@ -25,6 +29,9 @@ interface ProOverviewProps {
 }
 
 export default function ProOverview({ results, inputs, showInfo }: ProOverviewProps) {
+  const [optimisticMult, setOptimisticMult] = useState(1.2);
+  const [pessimisticMult, setPessimisticMult] = useState(0.8);
+
   const t = useTranslations('Dashboard');
   const realistic = results.scenarios?.realistic || results;
   const monteCarlo = results.monte_carlo;
@@ -47,11 +54,21 @@ export default function ProOverview({ results, inputs, showInfo }: ProOverviewPr
     };
   });
 
-  const scenarioData = results.scenarios ? [
-    { name: t('pessimistic'), vpl: results.scenarios.pessimistic.vpl, fill: '#f43f5e' },
-    { name: t('realistic'), vpl: results.scenarios.realistic.vpl, fill: '#3b82f6' },
-    { name: t('optimistic'), vpl: results.scenarios.optimistic.vpl, fill: '#10b981' },
-  ] : [];
+  // Dynamic Scenarios Logic
+  const getDynamicVPL = (multiplier: number) => {
+    // Highly simplified VPL recalculation for the UI
+    const totalRevenue = inputs.monthly_sales.reduce((a: any, b: any) => a + b, 0) * multiplier;
+    const totalCosts = inputs.monthly_costs.reduce((a: any, b: any) => a + b, 0);
+    const taxableIncome = totalRevenue - totalCosts;
+    const netProfit = taxableIncome * (1 - 0.15); // Simple tax assumption
+    return (netProfit * 5) - inputs.initial_investment; // Simple multiplier to simulate time value
+  };
+
+  const dynamicScenarioData = [
+    { name: t('pessimistic'), vpl: getDynamicVPL(pessimisticMult), fill: '#f43f5e', mult: pessimisticMult },
+    { name: t('realistic'), vpl: realistic.vpl, fill: '#3b82f6', mult: 1.0 },
+    { name: t('optimistic'), vpl: getDynamicVPL(optimisticMult), fill: '#10b981', mult: optimisticMult },
+  ];
 
   const pieData = [
     { name: 'Investimento', value: inputs.initial_investment, fill: '#3b82f6' },
@@ -171,23 +188,61 @@ export default function ProOverview({ results, inputs, showInfo }: ProOverviewPr
               </ResponsiveContainer>
             </TabsContent>
 
-            <TabsContent value="scenarios" className="h-[400px] mt-0">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={scenarioData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 900, fill: '#94a3b8' }} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 900, fill: '#94a3b8' }} />
-                  <Tooltip 
-                    cursor={{ fill: '#f1f5f9' }}
-                    contentStyle={{ borderRadius: '24px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', padding: '20px' }}
-                  />
-                  <Bar dataKey="vpl" radius={[6, 6, 0, 0]} barSize={60}>
-                    {scenarioData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.fill} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+            <TabsContent value="scenarios" className="h-[400px] mt-0 flex flex-col pt-4">
+              <div className="flex gap-12 mb-8 bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                 <div className="flex-1 space-y-4">
+                    <div className="flex justify-between items-end">
+                       <span className="text-[10px] font-black text-rose-500 uppercase tracking-widest flex items-center gap-2">
+                          <TrendingDown size={14} /> Estresse Pessimista
+                       </span>
+                       <span className="font-black text-slate-900">{(pessimisticMult * 100).toFixed(0)}%</span>
+                    </div>
+                    <Slider 
+                       min={0.5} max={0.95} step={0.05} 
+                       value={[pessimisticMult]}
+                       onValueChange={(val: any) => setPessimisticMult(val[0])}
+                    />
+                 </div>
+                 <div className="flex-1 space-y-4">
+                    <div className="flex justify-between items-end">
+                       <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest flex items-center gap-2">
+                          <TrendingUp size={14} /> Janela Otimista
+                       </span>
+                       <span className="font-black text-slate-900">{(optimisticMult * 100).toFixed(0)}%</span>
+                    </div>
+                    <Slider 
+                       min={1.05} max={1.5} step={0.05} 
+                       value={[optimisticMult]}
+                       onValueChange={(val: any) => setOptimisticMult(val[0])}
+                    />
+                 </div>
+              </div>
+
+              <div className="flex-1">
+                 <ResponsiveContainer width="100%" height="100%">
+                   <BarChart data={dynamicScenarioData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 900, fill: '#94a3b8' }} />
+                     <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 900, fill: '#94a3b8' }} />
+                     <Tooltip 
+                       cursor={{ fill: '#f1f5f9' }}
+                       contentStyle={{ borderRadius: '24px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', padding: '20px' }}
+                     />
+                     <Bar dataKey="vpl" radius={[6, 6, 0, 0]} barSize={60}>
+                       {dynamicScenarioData.map((entry, index) => (
+                         <Cell key={`cell-${index}`} fill={entry.fill} />
+                       ))}
+                     </Bar>
+                   </BarChart>
+                 </ResponsiveContainer>
+              </div>
+
+              <div className="mt-4 p-4 bg-amber-50 border border-amber-100 rounded-2xl flex items-start gap-3">
+                 <AlertCircle size={16} className="text-amber-500 mt-1 shrink-0" />
+                 <p className="text-[10px] font-medium text-amber-900/60 leading-relaxed">
+                    Este motor de sensibilidade é processado em tempo real no seu navegador. Os valores são estimativas baseadas na variação da receita operacional bruta.
+                 </p>
+              </div>
             </TabsContent>
           </Tabs>
         </Card>
