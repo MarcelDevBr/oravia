@@ -91,7 +91,7 @@ export default function Stepper() {
       setResults(data);
       
       // Save to history
-      saveSimulation(inputs.project_name, inputs, data);
+      await saveSimulation(inputs.project_name, inputs, data);
       
       setStep(5);
     } catch (error) {

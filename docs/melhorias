@@ -1,0 +1,25 @@
+- unificar as interface. E que porra é essa de 10.000 cenários
+- alem disso tem Viabilidade Econômica 4.0 estou começando agora e já é a versão 4.0?
+- criar um sistema de versionamento do projeto
+- preciso criar uma parte para o cadastro de contas, usuários, papéis, permissões e pagamentos da conta
+- além disso a tela de comparativo está apresentando erros
+- adicionar um sistema de cobrança
+- pesquisar e ver um diferencial para ele
+- permitir compartilhar informações e gerar relatórios
+- modulos a parte exigem cobranças a parte
+
+- melhorar os testes
+- verificar se aguenta o fluxo e tem que continuar stateless
+- pesquisar serviõs gratuítos e seguros
+
+- definir melhor as personas
+
+- começar com B2C mas depois ir B2B
+
+Exemplo:
+
+O "Ponto de Equilíbrio" (Breakeven)
+Para você não tirar mais dinheiro do seu salário de R$ 11k para pagar o Oravia:
+
+No Modelo A: Você precisa de pelo menos 120 usuários pagando R$ 50,00 para cobrir os custos básicos de servidor, API e impostos.
+No Modelo B: Apenas 5 escritórios pagando R$ 1.000,00 já deixam o projeto no azul e pagam seu plano de saúde.

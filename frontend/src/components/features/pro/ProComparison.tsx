@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 import { SimulationHistoryItem } from "@/lib/history";
 import { 
   BarChart, 
@@ -16,13 +17,15 @@ import {
   LineChart,
   Line
 } from "recharts";
-import { Scale, Info } from "lucide-react";
+import { Scale, Info, TrendingUp, Crown } from "lucide-react";
 
 interface ProComparisonProps {
   history: SimulationHistoryItem[];
+  isPro?: boolean;
+  onUpgrade?: () => void;
 }
 
-export default function ProComparison({ history }: ProComparisonProps) {
+export default function ProComparison({ history, isPro, onUpgrade }: ProComparisonProps) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const toggleProject = (id: string) => {
@@ -31,20 +34,56 @@ export default function ProComparison({ history }: ProComparisonProps) {
     );
   };
 
+  if (!isPro) {
+    return (
+      <div className="h-full flex flex-col items-center justify-center p-20 text-center space-y-8 bg-white border border-slate-200 rounded-[3rem] shadow-2xl shadow-slate-200/40 relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-12 opacity-5">
+           <TrendingUp size={160} />
+        </div>
+        <div className="w-24 h-24 bg-blue-600 rounded-[2rem] flex items-center justify-center shadow-2xl shadow-blue-600/30 text-white relative z-10">
+           <TrendingUp size={48} />
+        </div>
+        <div className="space-y-4 max-w-lg relative z-10">
+           <h2 className="text-4xl font-black text-slate-900 tracking-tight">Comparativo Avançado</h2>
+           <p className="text-lg text-slate-500 font-medium">
+              Analise múltiplos cenários lado a lado e tome decisões fundamentadas com o Oráculo Comparativo.
+           </p>
+        </div>
+        <Button 
+          onClick={onUpgrade}
+          className="h-16 px-12 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-2xl shadow-blue-600/20 transition-all hover:scale-105 active:scale-95 z-10 flex items-center gap-3"
+        >
+           <Crown size={20} /> Desbloquear Agora
+        </Button>
+        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest relative z-10">Exclusivo para membros Oravia Pro</p>
+      </div>
+    );
+  }
+
   const selectedProjects = history.filter(p => selectedIds.includes(p.id));
 
+  // Helper to get realistic scenario or top-level results
+  const getRealistic = (p: SimulationHistoryItem) => {
+    return p.results.scenarios?.realistic || p.results;
+  };
+
   // Prepare chart data for VPL
-  const vplData = selectedProjects.map(p => ({
-    name: p.project_name,
-    VPL: p.results.realistic.vpl
-  }));
+  const vplData = selectedProjects.map(p => {
+    const res = getRealistic(p);
+    return {
+      name: p.project_name,
+      VPL: res.vpl
+    };
+  });
 
   // Prepare chart data for Cash Flow
-  // We assume all have the same number of months (12 by default from backend)
-  const cashFlowData = Array.from({ length: 12 }).map((_, i) => {
-    const dataPoint: any = { month: i + 1 };
+  // We calculate it from inputs since results don't contain it
+  const cashFlowData = Array.from({ length: 4 }).map((_, i) => { // Assuming 4 months based on current stepper inputs
+    const dataPoint: any = { month: `M${i + 1}` };
     selectedProjects.forEach(p => {
-      dataPoint[p.project_name] = p.results.realistic.cash_flow[i];
+      const sales = p.inputs.monthly_sales[i] || 0;
+      const costs = p.inputs.monthly_costs[i] || 0;
+      dataPoint[p.project_name] = sales - costs;
     });
     return dataPoint;
   });
@@ -115,24 +154,27 @@ export default function ProComparison({ history }: ProComparisonProps) {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-50">
-                      {selectedProjects.map((p, idx) => (
-                        <tr key={p.id}>
-                          <td className="py-4">
-                            <div className="flex items-center gap-2">
-                              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: colors[idx % colors.length] }} />
-                              <span className="font-bold text-slate-900">{p.project_name}</span>
-                            </div>
-                          </td>
-                          <td className="py-4 font-black">R$ {p.results.realistic.vpl.toLocaleString()}</td>
-                          <td className="py-4 font-bold text-blue-600">{(p.results.realistic.tir * 100).toFixed(1)}%</td>
-                          <td className="py-4 text-slate-500 font-medium">{p.results.realistic.payback_period} meses</td>
-                          <td className="py-4">
-                            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${p.results.realistic.vpl > 0 ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'}`}>
-                              {p.results.realistic.vpl > 0 ? 'Viável' : 'Inviável'}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
+                      {selectedProjects.map((p, idx) => {
+                        const res = getRealistic(p);
+                        return (
+                          <tr key={p.id}>
+                            <td className="py-4">
+                              <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: colors[idx % colors.length] }} />
+                                <span className="font-bold text-slate-900">{p.project_name}</span>
+                              </div>
+                            </td>
+                            <td className="py-4 font-black">R$ {res.vpl.toLocaleString()}</td>
+                            <td className="py-4 font-bold text-blue-600">{(res.tir * 100).toFixed(1)}%</td>
+                            <td className="py-4 text-slate-500 font-medium">{res.payback_months} meses</td>
+                            <td className="py-4">
+                              <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${res.vpl > 0 ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'}`}>
+                                {res.vpl > 0 ? 'Viável' : 'Inviável'}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

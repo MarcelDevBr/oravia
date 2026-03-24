@@ -1,42 +1,63 @@
-# ORAVIA
-ORAVIA: A verdade matemática por trás de cada negócio.
+# Oravia Oracle 🔮
 
-Este repositório contém o projeto Oravia, um estúdio cinematográfico de produção de documentários e ferramenta de diagnóstico financeiro.
+> **A verdade matemática por trás de cada negócio.**
 
-## Estrutura do Projeto
-- `frontend/`: Aplicação web construída com Next.js (Tailwind CSS, TypeScript).
-- `oravia-api/`: API REST construída com FastAPI e gerenciada pelo `uv`.
+O **Oravia** é um ecossistema de inteligência financeira de alta performance, projetado para transformar projeções estáticas em diagnósticos dinâmicos e estratégicos. Combinando a precisão do `Numpy-Financial` com a agilidade do `Next.js`, o Oravia oferece uma experiência de Viabilidade Econômica 1.0 (Beta) sem precedentes.
 
-## Como Iniciar
+---
 
-Agora que o projeto está organizado como um **UV Workspace**, você pode rodar a API de qualquer lugar na raiz:
+## ✨ Principais Funcionalidades
 
-### 🚀 Modo Rápido (Backend + Frontend)
-Para iniciar ambos simultaneamente, use o script `dev.sh` na raiz:
+- **Oráculo Financeiro**: Motor de cálculo assíncrono para VPL (NPV), TIR (IRR), Payback e ROI.
+- **Hyperfocus UI**: Interface baseada em Steppers para reduzir a carga cognitiva e focar no que importa.
+- **Simulação de Monte Carlo**: Análise de risco estatístico executando 10.000 trials para prever a probabilidade de sucesso.
+- **Análise Multi-Cenário**: Geração automática de cenários Realista, Otimista e Pessimista.
+- **EVE Knowledge**: Módulo educativo integrado para democratizar o conhecimento financeiro.
+
+---
+
+## 🏗️ Estrutura do Ecossistema
+
+- **[`frontend/`](file:///home/marcel/Desenvolvimento/workspace/oravia/frontend)**: Aplicação web construída com Next.js 14, Tailwind CSS e Framer Motion para animações fluidas e premium.
+- **[`oravia-api/`](file:///home/marcel/Desenvolvimento/workspace/oravia/oravia-api)**: API REST robusta em FastAPI, gerenciada pelo moderno `uv` para performance máxima.
+
+---
+
+## 🚀 Guia de Início Rápido
+
+O projeto utiliza um **UV Workspace** para gerenciar dependências de forma eficiente.
+
+### Modo Unificado (Backend + Frontend)
+Inicie o ambiente completo com um único comando na raiz:
 ```bash
 ./dev.sh
 ```
 
-### 1. API (Backend)
+### Comandos Individuais
+**API (Backend)**:
 ```bash
 uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
-A API estará disponível em `http://localhost:8000`.
 
-### 2. Frontend
-Navegue até o diretório do frontend:
+**Interface (Frontend)**:
 ```bash
-cd frontend
-npm run dev
+cd frontend && npm run dev
 ```
 
-## Testes
-Os testes da API podem ser rodados diretamente da raiz:
-```bash
-uv run pytest oravia-api/tests/test_api.py
-```
+---
 
-## Estrutura de Desenvolvimento
-- **Workspace**: O arquivo `pyproject.toml` na raiz gerencia as dependências de todo o projeto.
-- **Editable**: A `oravia-api` está instalada como uma dependência editável, então qualquer mudança no código da API é refletida imediatamente.
-- **Configurações**: Linter (Pyright) e Testes (Pytest) estão configurados para funcionar perfeitamente com esta estrutura.
+## 🧪 Excelência Técnica
+
+Nossa engenharia prioriza a precisão bancária e a escalabilidade:
+- **Testes Unitários**: Validação rigorosa dos cálculos financeiros comparados a padrões de mercado.
+- **Architecture**: Design stateless preparado para escala vertical e horizontal.
+- **Package Management**: Uso do `uv` para resolução instantânea de dependências.
+
+---
+
+## 🗺️ Roadmap e Evolução
+Para acompanhar os planos futuros de monetização (B2B/B2C) e novas funcionalidades, consulte nosso [ROADMAP.md](file:///home/marcel/Desenvolvimento/workspace/oravia/docs/ROADMAP.md).
+
+---
+
+**Oravia: Inteligência, Matemática e Visão.**

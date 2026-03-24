@@ -4,13 +4,17 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Printer, Download, FileText, TrendingUp, TrendingDown, Activity } from "lucide-react";
 
+import { exportToPDF } from "@/lib/pdfExport";
+
 interface ProReportsProps {
   results: any;
   inputs: any;
   showInfo?: boolean;
+  isPro?: boolean;
+  onUpgrade?: () => void;
 }
 
-export default function ProReports({ results, inputs, showInfo }: ProReportsProps) {
+export default function ProReports({ results, inputs, showInfo, isPro, onUpgrade }: ProReportsProps) {
   const t = useTranslations('Dashboard');
   const realistic = results.scenarios?.realistic || results;
   
@@ -22,23 +26,34 @@ export default function ProReports({ results, inputs, showInfo }: ProReportsProp
   const taxes = revenue.map((r: number) => r * 0.15); // Standard tax assumption
   const ebitda = revenue.map((r: number, i: number) => r - opex[i] - taxes[i]);
 
-  const handlePrint = () => {
-    window.print();
+  const handleExportPDF = async () => {
+    await exportToPDF('report-container', `Relatorio_Oravia_${inputs.project_name}`);
   };
 
   return (
-    <div className="space-y-8 print:p-0">
+    <div className="space-y-8 print:p-0" id="report-container">
       <div className="flex justify-between items-center print:hidden">
         <div>
           <h2 className="text-3xl font-black text-slate-900 tracking-tighter">{t('menu_reports')}</h2>
           <p className="text-slate-500 font-medium text-sm">Relatórios financeiros detalhados para exportação</p>
         </div>
         <div className="flex gap-3">
-          <Button onClick={handlePrint} variant="outline" className="rounded-2xl font-black text-[10px] uppercase tracking-widest gap-2 h-12 px-6 border-slate-200">
-            <Printer size={16} /> Imprimir PDF
+          <Button onClick={handleExportPDF} variant="outline" className="rounded-2xl font-black text-[10px] uppercase tracking-widest gap-2 h-12 px-6 border-slate-200 group">
+            <Printer size={16} className="group-hover:scale-110 transition-transform" /> Exportar PDF Pro
           </Button>
-          <Button className="rounded-2xl font-black text-[10px] uppercase tracking-widest gap-2 h-12 px-6 bg-blue-600 shadow-xl shadow-blue-600/20">
-            <Download size={16} /> Exportar Excel
+          <Button 
+            onClick={!isPro ? onUpgrade : undefined}
+            className={`rounded-2xl font-black text-[10px] uppercase tracking-widest gap-2 h-12 px-6 transition-all group relative overflow-hidden ${!isPro ? 'bg-slate-100 text-slate-400 border border-slate-200' : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xl shadow-emerald-600/20'}`}
+          >
+            <Download size={16} /> 
+            <span>Exportar Excel</span>
+            {!isPro && (
+              <div className="absolute inset-0 bg-slate-900/5 backdrop-blur-[1px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="bg-slate-900 text-white text-[8px] px-2 py-1 rounded-full flex items-center gap-1 leading-none">
+                   🔒 RECURSO PREMIUM
+                </span>
+              </div>
+            )}
           </Button>
         </div>
       </div>

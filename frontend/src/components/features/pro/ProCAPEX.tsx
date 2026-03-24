@@ -50,18 +50,18 @@ export default function ProCAPEX({ showInfo }: { showInfo?: boolean }) {
          </div>
       </div>
 
-      <div className="relative overflow-hidden border border-slate-200 rounded-3xl bg-white shadow-2xl shadow-slate-200/50">
+      <div className="relative overflow-hidden border border-slate-200 rounded-[2rem] bg-white shadow-2xl shadow-slate-200/40">
         <table className="w-full text-left border-collapse">
            <thead>
-              <tr className="bg-slate-50 border-b border-slate-200">
-                 <th className="p-4 text-[10px] font-black uppercase text-slate-400 tracking-widest">Item de Investimento</th>
-                 <th className="p-4 text-[10px] font-black uppercase text-slate-400 tracking-widest">Tipo</th>
-                 <th className="p-4 text-[10px] font-black uppercase text-slate-400 tracking-widest">Valor de Compra</th>
-                 <th className="p-4 text-[10px] font-black uppercase text-slate-400 tracking-widest text-center">Vida Útil (Meses)</th>
-                 <th className="p-4 text-[10px] font-black uppercase text-slate-400 tracking-widest text-right">Deprec. Mensal</th>
+              <tr className="bg-slate-900 border-b border-white/10">
+                 <th className="p-5 text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">Item de Investimento</th>
+                 <th className="p-5 text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">Tipo</th>
+                 <th className="p-5 text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">Valor de Compra</th>
+                 <th className="p-5 text-[10px] font-black uppercase text-white/70 tracking-[0.2em] text-center">Vida Útil (Meses)</th>
+                 <th className="p-5 text-[10px] font-black uppercase text-white/70 tracking-[0.2em] text-right">Deprec. Mensal</th>
               </tr>
            </thead>
-           <tbody>
+           <tbody className="divide-y divide-slate-50">
               {rows.map((row) => (
                  <tr key={row.id} className="border-b border-slate-100 hover:bg-emerald-50/20 transition-colors group">
                     <td className="p-4 font-bold text-slate-700">

@@ -42,20 +42,20 @@ export default function ProOPEX({ showInfo }: { showInfo?: boolean }) {
         </div>
       </div>
 
-      <div className="relative overflow-hidden border border-slate-200 rounded-3xl bg-white shadow-2xl shadow-slate-200/50">
+      <div className="relative overflow-hidden border border-slate-200 rounded-[2rem] bg-white shadow-2xl shadow-slate-200/40">
         <div className="overflow-x-auto custom-scrollbar">
           <table className="w-full text-left border-collapse min-w-[1200px]">
              <thead>
-                <tr className="bg-slate-50 border-b border-slate-200">
-                   <th className="p-4 text-[10px] font-black uppercase text-slate-400 tracking-widest sticky left-0 bg-slate-50 z-10 w-48">Categoria</th>
-                   <th className="p-4 text-[10px] font-black uppercase text-slate-400 tracking-widest w-48">Item de Despesa</th>
-                   <th className="p-4 text-[10px] font-black uppercase text-slate-400 tracking-widest w-32">Natureza</th>
+                <tr className="bg-slate-900 border-b border-white/10">
+                   <th className="p-5 text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] sticky left-0 bg-slate-900 z-10 w-48">Categoria</th>
+                   <th className="p-5 text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] w-48">Item de Despesa</th>
+                   <th className="p-5 text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] w-32">Natureza</th>
                    {months.map(m => (
-                      <th key={m} className="p-4 text-[10px] font-black uppercase text-slate-600 tracking-widest text-center min-w-[100px] border-l border-slate-100">{m}</th>
+                      <th key={m} className="p-5 text-[10px] font-black uppercase text-white/70 tracking-[0.2em] text-center min-w-[100px] border-l border-white/5">{m}</th>
                    ))}
                 </tr>
              </thead>
-             <tbody>
+             <tbody className="divide-y divide-slate-50">
                 {rows.map((row) => (
                    <tr key={row.id} className="border-b border-slate-100 hover:bg-rose-50/20 transition-colors">
                       <td className="p-4 font-bold text-slate-700 sticky left-0 bg-white z-10 border-r border-slate-100">

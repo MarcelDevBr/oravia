@@ -192,34 +192,60 @@ export default function ProOverview({ results, inputs, showInfo }: ProOverviewPr
           </Tabs>
         </Card>
 
-        <Card className="border-none shadow-2xl bg-slate-900 text-white rounded-[2rem] p-8 flex flex-col justify-between overflow-hidden relative">
-           <div className="absolute top-[-20%] right-[-20%] w-[60%] h-[60%] bg-blue-600/20 blur-[80px] rounded-full"></div>
-           <div className="relative z-10 space-y-8">
-              <div className="flex items-center gap-2 text-blue-400">
-                <Crown className="w-4 h-4" />
-                <span className="text-[10px] font-black tracking-widest uppercase">{t('verdict_title')}</span>
-              </div>
-              <p className="text-xl font-medium leading-relaxed italic text-blue-50/90">
-                {realistic.vpl > 0 
-                 ? `Seu projeto possui um VPL robusto de R$ ${realistic.vpl.toLocaleString()}. A probabilidade de sucesso é encorajadora.` 
-                 : `Atenção: O projeto apresenta alto risco financeiro. Considere rever a estrutura de custos.`}
-              </p>
-              <div className="space-y-4 pt-6">
-                 <div className="flex justify-between items-end">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('success_prob')}</span>
-                    <span className="text-3xl font-black text-white">{successProb}%</span>
-                 </div>
-                 <div className="w-full bg-white/10 h-3 rounded-full overflow-hidden">
-                    <motion.div 
-                       initial={{ width: 0 }}
-                       animate={{ width: `${successProb}%` }}
-                       transition={{ duration: 1.5, ease: "easeOut" }}
-                       className={`${parseInt(successProb) > 50 ? 'bg-blue-500' : 'bg-rose-500'} h-full shadow-[0_0_20px_rgba(59,130,246,0.6)]`}
-                    />
-                 </div>
-              </div>
-           </div>
-        </Card>
+         {/* Monte Carlo Explanation & Confidence Gauge */}
+         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="md:col-span-2 border-none shadow-xl bg-slate-900 text-white rounded-[2.5rem] p-10 relative overflow-hidden group">
+               <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:scale-110 transition-transform duration-700">
+                  <Sparkles size={160} />
+               </div>
+               <div className="relative z-10 space-y-6">
+                  <div className="flex items-center gap-3">
+                     <div className="p-3 bg-blue-500 rounded-2xl shadow-lg shadow-blue-500/20">
+                        <Activity size={24} />
+                     </div>
+                     <h3 className="text-2xl font-black tracking-tight">O "Oráculo" e os 10.000 Cenários</h3>
+                  </div>
+                  <p className="text-slate-300 text-lg font-medium leading-relaxed max-w-2xl">
+                     Para garantir a sua segurança, realizamos uma **Simulação de Monte Carlo** com **10.000 iterações estatísticas**. 
+                     Não apenas projetamos o futuro; nós o estressamos contra milhares de variações de mercado para encontrar a sua verdadeira probabilidade de sucesso.
+                  </p>
+                  <div className="flex gap-4">
+                     <div className="px-4 py-2 bg-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest border border-white/10">
+                        Estatística Bayesiana
+                     </div>
+                     <div className="px-4 py-2 bg-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest border border-white/10">
+                        Análise de Sensibilidade
+                     </div>
+                  </div>
+               </div>
+            </Card>
+
+            <Card className="border-none shadow-xl bg-white rounded-[3.5rem] p-10 flex flex-col items-center justify-center text-center space-y-4">
+               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Índice de Confiança</p>
+               <div className="relative w-40 h-40 flex items-center justify-center">
+                  <svg className="w-full h-full -rotate-90">
+                     <circle cx="80" cy="80" r="70" stroke="#f1f5f9" strokeWidth="12" fill="none" />
+                     <motion.circle 
+                        cx="80" cy="80" r="70" 
+                        stroke="#2563eb" 
+                        strokeWidth="12" 
+                        fill="none" 
+                        strokeDasharray="440"
+                        initial={{ strokeDashoffset: 440 }}
+                        animate={{ strokeDashoffset: 440 - (440 * (parseInt(successProb)/100)) }}
+                        transition={{ duration: 2, ease: "easeOut" }}
+                     />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                     <span className="text-4xl font-black text-slate-900 tracking-tighter">{successProb}%</span>
+                     <span className={`text-[8px] font-black uppercase tracking-widest ${parseInt(successProb) > 80 ? 'text-emerald-500' : 'text-rose-500'}`}>
+                        {parseInt(successProb) > 80 ? 'Muito Alta' : 'Moderada'}
+                     </span>
+                  </div>
+               </div>
+               <p className="text-xs text-slate-500 font-medium px-4">Probabilidade de atingir o VPL projetado sob estresse médio.</p>
+            </Card>
+         </div>
       </div>
     </div>
   );
